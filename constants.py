@@ -1,4 +1,3 @@
-import imp
 from tkinter import *
 
 #color theme constants

@@ -1,5 +1,5 @@
 from tkinter import Frame
-from constants import *
+from constants import window, window_primary, window_secondary
 
 #Body where all the frames will be displayed!
 body = Frame(window, background=window_primary)
@@ -45,5 +45,4 @@ def select_page(page):
         flex(history_frame)
         collapse(booking_frame)
         collapse(home_frame)
-
 

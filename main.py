@@ -1,10 +1,9 @@
 from tkinter import *
+from new_booking import Booking
 from components import *
-from content_body import home_frame, booking_frame
-from new_booking import frame
+from content_body import home_frame, booking_frame, history_frame
 from history import render_enteries
 from residents import *
-
 
 # init header bar (orignal component inside components.py file)
 header()
@@ -21,18 +20,27 @@ homelabel.place(x=170, y=80)
 
 
 # 2. init New Booking frame
-frame(booking_frame, "New Booking")
-
+Booking(booking_frame, "New Booking", False, "Save")
 
 # 3. init residents
 r1 = Resident()
-item = r1.set_details("John smith", "Estonia", "P122DHJS9", "M", "22-12-2022", "22-12-2023", "Single Room")
+r2 = Resident()
+r3 = Resident()
+r4 = Resident()
+r1.set_details("John 1", "Estonia", "P122DHJS9", "M", "22-12-2022", "22-12-2023", "single room")
+r2.set_details("Mahn 2", "Finland", "M132DHJS9", "M", "22-12-2022", "22-12-2023", "single room")
+r3.set_details("Bahn 3", "India", "M122DHJS9", "M", "22-12-2022", "22-12-2023", "single room")
+r4.set_details("Mohn 4", "Australia", "W122DHJS9", "M", "22-12-2022", "22-12-2023", "single room")
 
 
 r1.generate_booking_id()
+r2.generate_booking_id()
+r3.generate_booking_id()
+r4.generate_booking_id()
 list_items.append(r1.get_details())
-
+list_items.append(r2.get_details())
+list_items.append(r3.get_details())
+list_items.append(r4.get_details())
 
 # rendering already existed enteries
 render_enteries()
-

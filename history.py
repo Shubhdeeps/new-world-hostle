@@ -1,15 +1,30 @@
-from tkinter import Frame, Label, Entry, PhotoImage, Button
+from tkinter import Frame, Label, Entry, PhotoImage, Button, StringVar, ttk
 from constants import window_secondary, window_active, window_primary, window, list_items
 from display_message import Popup
 from frame_header import header_content
 from content_body import history_frame
-
 #a list to contain recent history files
 history_list = []
 
 #init history content frame
+
 history_body_frame = Frame(history_frame,background=window_secondary)
 history_body_frame.place(x=50, y=81, width=660, height=380)
+
+
+def frame_init():
+    global history_body_frame
+    history_body_frame.destroy()
+    history_body_frame = Frame(history_frame,background=window_secondary)
+    history_body_frame.place(x=50, y=81, width=660, height=380)
+    render_enteries()
+    render_header()
+    init_buttons()
+
+def update_frame(item):
+    from new_booking import Booking
+    Booking(history_frame, "Update", item, "Update")
+
 
 # each item displayed on the history frame will be an Instance of Items class
 class Items:
@@ -29,7 +44,7 @@ class Items:
         self._outer_frame.bind("<Enter>", self._mouse_enter)
         self._outer_frame.bind("<Leave>", self._mouse_leave)
 
-        self._booking_id = Label(self._inner_frame, font=("Comic Sans", 12, "bold"),bg=window_secondary, text=person["booking_id"], fg="#fff")
+        self._booking_id = Label(self._inner_frame, font=("Comic Sans", 12, "bold"),bg=window_secondary, text=person["passport"], fg="#fff")
         self._booking_id.place(x=45, y=19)
         
 
@@ -95,6 +110,8 @@ class Items:
 #rendering entries
 def render_enteries():
     global list_items
+    global history_list
+
     history_list.clear()
     if(len(list_items) == 0):
         return
@@ -125,6 +142,7 @@ def check_selected():
 # ----------- TO DELETE ITEM FROM THE LIST ---------------------------
 # function to delete enteries
 def delete_entry():
+    global history_list
     deleted_enteries = []     
 
     if(check_selected() == 0):
@@ -136,7 +154,6 @@ def delete_entry():
         if(x.get_selected_bookings()[1] == True):
             deleted = _remove_from_list(x.get_selected_bookings()[0])
             deleted_enteries.append(str(deleted))
-
         x.destroy_frame()
             
     strng = ""
@@ -167,7 +184,7 @@ def _entry_to_be_del(booking_id):
             
 # update function
 def update_entry():
-
+    global list_items
     if(check_selected() == 0):
         messagebox1 = Popup(window, "Nothing Selected", "Please Select a Booking")
         messagebox1.flex_box()
@@ -179,7 +196,11 @@ def update_entry():
         return
     
     if(check_selected() == 1):
-        print('lets update')
+        for x in history_list:
+            if(x.get_selected_bookings()[1] == True):
+                item_to_be_update = _entry_to_be_del(x.get_selected_bookings()[0])
+                list_items.remove(item_to_be_update)
+        update_frame(item_to_be_update)
 
 
 # --------- SELECT ALL BUTTON AND DESELECT ALL BUTTON FUNCTIONS ------------------------------
@@ -196,45 +217,74 @@ def de_select_all():
 
 # ------------HEADER OF HISTORY FRAME WIT DELETE AND UPDATE BUTTON --------------------- (original function in frame_header module)
 #creating header 
-header_content("History", history_frame, "Delete", "Update", delete_entry, update_entry)
+def render_header():
+    header_content("History", history_frame, "Delete", "Update", delete_entry, update_entry)
 
-
-
+render_header()
 
 # ---------------SEARCH AREA FIELD ----------------------------------------
-search_area = Entry(history_body_frame,font=("Comic Sans", 15) )
-search_area.place(x=0, y=350, width=200)
+options_list = ("name", "passport", "country")
+options = 'name'
+
+search_sv = StringVar()
+option_sv = StringVar()
+search_sv.trace("w", lambda name, index, mode, sv=search_sv: search_update(search_sv))
+option_sv.trace("w", lambda name, index, mode, sv=option_sv: select_option(option_sv))
 
 searchlogo = PhotoImage(file='./assets/search.png')
-searchlabel = Label(history_body_frame, text=" ", bg=window_secondary, image=searchlogo)
-searchlabel.place(x=205, y=350)
 
 
-# ---------------SELECT AND DESELECT ALL BUTTONS ----------------------------------------
-# button to select all enteries
-select_all_button = Button(history_body_frame,
-                        font=("Comic Sans", 10, "bold"),
-                        text="Select All",
-                        bg=window_primary,
-                        fg="#fff",
-                        activebackground=window_primary,
-                        activeforeground='#fff',
-                        bd=0,
-                        padx=20,
-                        pady=5,
-                        command=lambda: select_all())
 
-deselect_all_button = Button(history_body_frame,
-                        font=("Comic Sans", 10, "bold"),
-                        text="Deselect All",
-                        bg=window_primary,
-                        fg="#fff",
-                        activebackground=window_primary,
-                        activeforeground='#fff',
-                        bd=0,
-                        padx=20,
-                        pady=5,
-                        command=lambda: de_select_all())
+def select_option(sv):
+    global options
+    options = sv.get()
 
-deselect_all_button.place(x=430, y=350)
-select_all_button.place(x=555, y=350)
+def search_update(sv):
+    global list_items
+    global options
+    for x in range(len(list_items)):
+        if(list_items[x][options].lower().startswith(sv.get().lower()) == True):
+            temp_item = list_items[x]
+            list_items.remove(temp_item)
+            list_items.insert(0, temp_item)
+    render_enteries()
+
+
+def init_buttons():
+    search_area = Entry(history_body_frame,font=("Comic Sans", 14), textvariable=search_sv )
+    search_area.place(x=90, y=350, width=200)
+
+    search_options = ttk.Combobox(history_body_frame, state="readonly", values = options_list,font=("Comic Sans", 8), textvariable=option_sv)
+    search_options.place(x=0, y=350, width=80)
+
+    searchlabel = Label(history_body_frame, text=" ", bg=window_secondary, image=searchlogo)
+    searchlabel.place(x=295, y=350)
+    # button to select all enteries
+    select_all_button = Button(history_body_frame,
+                            font=("Comic Sans", 10, "bold"),
+                            text="Select All",
+                            bg=window_primary,
+                            fg="#fff",
+                            activebackground=window_primary,
+                            activeforeground='#fff',
+                            bd=0,
+                            padx=20,
+                            pady=5,
+                            command=lambda: select_all())
+
+    deselect_all_button = Button(history_body_frame,
+                            font=("Comic Sans", 10, "bold"),
+                            text="Deselect All",
+                            bg=window_primary,
+                            fg="#fff",
+                            activebackground=window_primary,
+                            activeforeground='#fff',
+                            bd=0,
+                            padx=20,
+                            pady=5,
+                            command=lambda: de_select_all())
+
+    deselect_all_button.place(x=430, y=350)
+    select_all_button.place(x=555, y=350)
+
+init_buttons()
