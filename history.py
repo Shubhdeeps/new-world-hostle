@@ -4,15 +4,16 @@ from display_message import Popup
 from frame_header import header_content
 from content_body import history_frame
 
-from residents import *
+#a list to contain recent history files
+history_list = []
 
 #init history content frame
 history_body_frame = Frame(history_frame,background=window_secondary)
 history_body_frame.place(x=50, y=81, width=660, height=380)
 
+# each item displayed on the history frame will be an Instance of Items class
 class Items:
     def __init__(self, ind, person):
-
         global history_body_frame
         self._isActive = False
         self.person = person
@@ -82,38 +83,46 @@ class Items:
         self._isActive = False
         self._changebg()
 
-    def delete_entry(self):
+    def destroy_frame(self):
         self._outer_frame.destroy()
 
     def _double_action(self, event):
-        messagebox1 = Popup(window, "{self.person.name} from {self.person.country}", "passport number: 122222, checkin date: 12-03-2001 to 12-04-2001, Gender: Male")
+        messagebox1 = Popup(window, self.person["name"] + ", " +  self.person["gender"] + " from " + self.person["country"], "Passport number: " +  self.person["passport"] + ", Duration of stay:" + self.person["date_from"] + " to " + self.person["date_to"] + ", Accomodation type: " + self.person["room_type"])
         messagebox1.flex_box()
 
 
+# --------- TO DISPLAY ITEMS IN HISTORY PANEL ----------------
 #rendering entries
 def render_enteries():
-    for i in list_items:
-        i.delete_entry()
+    global list_items
+    history_list.clear()
+    if(len(list_items) == 0):
+        return
 
-    list_items.clear()
-    for x in range(len(get_enteries())):
-        item = Items(x, get_enteries()[x])
-        list_items.append(item)
+    if(len(list_items) < 5):
+        for x in range(len(list_items)):
+            item = Items(x, list_items[x])
+            history_list.append(item)
+        return
+
+    for x in range(0, 5):
+        item = Items(x, list_items[x])
+        history_list.append(item)
 
 render_enteries()
-
 
 
 #to check if an entry has been seleted or not
 def check_selected():
     seletedNum = 0
-    for x in list_items:
+    for x in history_list:
             if(x.get_selected_bookings()[1] == True):
                 seletedNum += 1
                 
     return seletedNum
 
 
+# ----------- TO DELETE ITEM FROM THE LIST ---------------------------
 # function to delete enteries
 def delete_entry():
     deleted_enteries = []     
@@ -123,13 +132,13 @@ def delete_entry():
         messagebox1.flex_box()
         return
 
-    for x in list_items:
+    for x in history_list:
         if(x.get_selected_bookings()[1] == True):
-            deleted = delete_resident_entry(x.get_selected_bookings()[0])
-            print(deleted)
+            deleted = _remove_from_list(x.get_selected_bookings()[0])
             deleted_enteries.append(str(deleted))
+
+        x.destroy_frame()
             
-    
     strng = ""
     for m in deleted_enteries:
         strng += m + ', '
@@ -138,7 +147,23 @@ def delete_entry():
     messagebox1.flex_box()
 
     render_enteries()
-            
+
+
+def _remove_from_list(booking_id):
+    global list_items
+    global history_list
+    delete = _entry_to_be_del(booking_id)
+    list_items.remove(delete)
+    return booking_id
+
+def _entry_to_be_del(booking_id):
+    global list_items
+    for x in list_items:
+        if(x["booking_id"] == booking_id):
+            return x
+
+
+# ------------------ TO UPDATE AN ITEM IN A LIST -------------------
             
 # update function
 def update_entry():
@@ -152,24 +177,31 @@ def update_entry():
         messagebox1 = Popup(window, "Multiple Entries Selected", "Please Select a single entry to update")
         messagebox1.flex_box()
         return
+    
+    if(check_selected() == 1):
+        print('lets update')
 
+
+# --------- SELECT ALL BUTTON AND DESELECT ALL BUTTON FUNCTIONS ------------------------------
     
 def select_all():
-    for x in list_items:
+    for x in history_list:
         x.set_true()
     
 
 def de_select_all():
-    for x in list_items:
+    for x in history_list:
         x.set_false()
 
 
+# ------------HEADER OF HISTORY FRAME WIT DELETE AND UPDATE BUTTON --------------------- (original function in frame_header module)
 #creating header 
 header_content("History", history_frame, "Delete", "Update", delete_entry, update_entry)
 
 
 
-#search area
+
+# ---------------SEARCH AREA FIELD ----------------------------------------
 search_area = Entry(history_body_frame,font=("Comic Sans", 15) )
 search_area.place(x=0, y=350, width=200)
 
@@ -177,6 +209,8 @@ searchlogo = PhotoImage(file='./assets/search.png')
 searchlabel = Label(history_body_frame, text=" ", bg=window_secondary, image=searchlogo)
 searchlabel.place(x=205, y=350)
 
+
+# ---------------SELECT AND DESELECT ALL BUTTONS ----------------------------------------
 # button to select all enteries
 select_all_button = Button(history_body_frame,
                         font=("Comic Sans", 10, "bold"),

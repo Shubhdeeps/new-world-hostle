@@ -4,6 +4,7 @@ from content_body import select_page
 
 
 
+
 # ---------------------HEADER COMPONENT-------------------
 logo = PhotoImage(file='./assets/logo.png')
 def header():

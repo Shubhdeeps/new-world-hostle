@@ -1,7 +1,6 @@
 from tkinter import Frame
 from constants import *
 
-
 #Body where all the frames will be displayed!
 body = Frame(window, background=window_primary)
 body.place(x=400, y=160, width=760, height=500)
