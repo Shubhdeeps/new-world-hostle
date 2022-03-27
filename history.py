@@ -1,4 +1,5 @@
-from tkinter import Frame, Label, Entry, PhotoImage, Button, StringVar, ttk
+from pprint import isreadable
+from tkinter import FLAT, Frame, Label, Entry, PhotoImage, Button, StringVar, ttk
 from constants import window_secondary, window_active, window_primary, window, list_items
 from display_message import Popup
 from frame_header import header_content
@@ -34,25 +35,25 @@ class Items:
         self.person = person
         
         self._outer_frame = Frame(history_body_frame, background="#7C7C7C")
-        self._outer_frame.place(x=0, y = (ind*65 + 5), width=660, height=60)
+        self._outer_frame.place(x=0, y = (ind*65 + 5), width=610, height=60)
         self._inner_frame = Frame(self._outer_frame, background = window_secondary)
-        self._inner_frame.place(x=1, y=1, width=658, height=58)
+        self._inner_frame.place(x=1, y=1, relwidth=1, width=-2, relheight=1, height=-2)
 
 
         self._bindAction(self._inner_frame)
         self._inner_frame.bind("<Double-Button-1>", self._double_action)
         self._outer_frame.bind("<Enter>", self._mouse_enter)
         self._outer_frame.bind("<Leave>", self._mouse_leave)
-
-        self._booking_id = Label(self._inner_frame, font=("Comic Sans", 12, "bold"),bg=window_secondary, text=person["passport"], fg="#fff")
-        self._booking_id.place(x=45, y=19)
         
-
         self._name = Label(self._inner_frame, font=("Comic Sans", 12), text=person["name"], bg=window_secondary, fg="#fff")
-        self._name.place(x=270, y=19)
+        self._name.place(x=25, y=19)
+       
+        self._booking_id = Label(self._inner_frame, font=("Comic Sans", 12, "bold"),bg=window_secondary, text=person["passport"], fg="#fff")
+        self._booking_id.place(x=255, y=19)
+
 
         self._country = Label(self._inner_frame, font=("Comic Sans", 12), text=person["country"], bg=window_secondary, fg="#fff")
-        self._country.place(x=550, y=19)
+        self._country.place(x=500, y=19)
 
 
     def _mouse_enter(self, event):
@@ -111,6 +112,8 @@ class Items:
 def render_enteries():
     global list_items
     global history_list
+    for x in range(len(history_list)):
+         history_list[x].destroy_frame()
 
     history_list.clear()
     if(len(list_items) == 0):
@@ -232,6 +235,8 @@ search_sv.trace("w", lambda name, index, mode, sv=search_sv: search_update(searc
 option_sv.trace("w", lambda name, index, mode, sv=option_sv: select_option(option_sv))
 
 searchlogo = PhotoImage(file='./assets/search.png')
+uplogo = PhotoImage(file='./assets/up.png')
+downlogo = PhotoImage(file='./assets/down.png')
 
 
 
@@ -239,6 +244,8 @@ def select_option(sv):
     global options
     options = sv.get()
 
+
+#fix this function
 def search_update(sv):
     global list_items
     global options
@@ -249,6 +256,23 @@ def search_update(sv):
             list_items.insert(0, temp_item)
     render_enteries()
 
+def scroll_btn_up():
+    global list_items
+    if(len(list_items) < 6):
+        return
+    last_item = list_items[-1]
+    list_items.remove(last_item)
+    list_items.insert(0, last_item)
+    render_enteries()
+
+def scroll_btn_down():
+    global list_items
+    if(len(list_items) < 6):
+        return
+    first_item = list_items[0]
+    list_items.remove(first_item)
+    list_items.append(first_item)
+    render_enteries()
 
 def init_buttons():
     search_area = Entry(history_body_frame,font=("Comic Sans", 14), textvariable=search_sv )
@@ -256,6 +280,11 @@ def init_buttons():
 
     search_options = ttk.Combobox(history_body_frame, state="readonly", values = options_list,font=("Comic Sans", 8), textvariable=option_sv)
     search_options.place(x=0, y=350, width=80)
+
+    up_scroll = Button(history_body_frame, text=" ", bg=window_secondary, activebackground=window_secondary, image=uplogo, bd=0, relief=FLAT, command=scroll_btn_up)
+    up_scroll.place(relx=1, x=-40, rely=0.3, y=-20)
+    down_scroll = Button(history_body_frame, text=" ", bg=window_secondary, activebackground=window_secondary, image=downlogo, bd=0, relief=FLAT, command=scroll_btn_down)
+    down_scroll.place(relx=1, x=-40, rely=0.4, y= 20)
 
     searchlabel = Label(history_body_frame, text=" ", bg=window_secondary, image=searchlogo)
     searchlabel.place(x=295, y=350)

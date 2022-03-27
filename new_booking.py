@@ -8,7 +8,7 @@ from history import render_enteries
 
 country_list = ("Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cruise Ship","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kuwait","Kyrgyz Republic","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Mauritania","Mauritius","Mexico","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Namibia","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre &amp; Miquelon","Samoa","San Marino","Satellite","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Kitts &amp; Nevis","St Lucia","St Vincent","St. Lucia","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad &amp; Tobago","Tunisia","Turkey","Turkmenistan","Turks &amp; Caicos","Uganda","Ukraine","United Arab Emirates","United Kingdom","Uruguay","Uzbekistan","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe")
 accomodation_types = ("male dorm", "female dorm", "single room", "double room")
-
+line_color = '#7C7C7C'
 data_fetched = {
     "name": "",
     "country": "",
@@ -39,14 +39,15 @@ class Booking:
         name_label.place(x=0, y=spacing)
         name_sv = StringVar()
         name_sv.trace("w", lambda name, index, mode, sv=name_sv: self.text_update(name_sv, "name"))
-        self.name = Entry(self.booking_body_frame,font=("Comic Sans", 15), textvariable=name_sv)
+
+        self.name = Entry(self.booking_body_frame,font=("Comic Sans", 15), textvariable=name_sv, background=line_color, relief=FLAT)
         self.name.place(x=xspacing, y=spacing, width=250)
 
         gender_label = Label(self.booking_body_frame, text="Gender", font=("Comic Sans", 16, "bold"), fg='#fff', bg=window_secondary)
         gender_label.place(x=0, y=spacing + 50)
         self.gender_sv = StringVar()
         self.gender_sv.trace("w", lambda name, index, mode, sv=self.gender_sv: self.text_update(self.gender_sv, "gender"))
-        self.male = Radiobutton(self.booking_body_frame, text="Male", value="M", font=("Comic Sans", 14, "bold"), fg=window_active, bg=window_secondary, activebackground=window_secondary, activeforeground=window_active, padx=20, variable=self.gender_sv, indicatoron=0)
+        self.male = Radiobutton(self.booking_body_frame, text="Male", value="M", font=("Comic Sans", 14, "bold"), fg=window_active, bg=window_secondary, activebackground=window_secondary, activeforeground=window_active, padx=20, variable=self.gender_sv, indicatoron=0, relief=FLAT)
         self.female = Radiobutton(self.booking_body_frame, text="Female", value="F", font=("Comic Sans", 14, "bold"), fg=window_active, bg=window_secondary, activebackground=window_secondary, activeforeground=window_active, padx=20, variable=self.gender_sv, indicatoron=0)
         self.male.place(x=xspacing, y=spacing + 50)
         self.female.place(x=xspacing + 100, y=spacing + 50)
@@ -55,7 +56,7 @@ class Booking:
         country_label.place(x=0, y=spacing + 100)
         country_sv = StringVar()
         country_sv.trace("w", lambda name, index, mode, sv=country_sv: self.text_update(country_sv, "country"))
-        self.countrylist = ttk.Combobox(self.booking_body_frame, state="readonly", values = country_list,font=("Comic Sans", 12), textvariable=country_sv)
+        self.countrylist = ttk.Combobox(self.booking_body_frame, state="readonly", values = country_list,font=("Comic Sans", 12), textvariable=country_sv, background=window_secondary)
         self.countrylist.set("Select a country")
         self.countrylist.place(x= xspacing, y=spacing + 100)
 
@@ -63,21 +64,21 @@ class Booking:
         passport_label.place(x=0, y=spacing + 150)
         passport_sv = StringVar()
         passport_sv.trace("w", lambda name, index, mode, sv=passport_sv: self.text_update(passport_sv, "passport"))
-        self.passport = Entry(self.booking_body_frame,font=("Comic Sans", 15), textvariable=passport_sv)
+        self.passport = Entry(self.booking_body_frame,font=("Comic Sans", 15), textvariable=passport_sv, background=line_color, relief=FLAT)
         self.passport.place(x=xspacing, y=spacing + 150, width=250)
 
         duration_label = Label(self.booking_body_frame, text="Duration", font=("Comic Sans", 16, "bold"), fg='#fff', bg=window_secondary)
         duration_label.place(x=0, y=spacing + 200)
         duration_from_sv = StringVar()
         duration_from_sv.trace("w", lambda name, index, mode, sv=duration_from_sv: self.text_update(duration_from_sv, "date_from"))
-        self.durationfrom = Entry(self.booking_body_frame,font=("Comic Sans", 15) , textvariable=duration_from_sv)
+        self.durationfrom = Entry(self.booking_body_frame,font=("Comic Sans", 15) , textvariable=duration_from_sv, background=line_color, relief=FLAT)
         self.durationfrom.place(x=xspacing, y=spacing + 200, width=150)
 
         to_label = Label(self.booking_body_frame, text="To", font=("Comic Sans", 14, "bold"), fg='#fff', bg=window_secondary)
         to_label.place(x=xspacing + 180, y=spacing + 200)
         duration_to_sv = StringVar()
         duration_to_sv.trace("w", lambda name, index, mode, sv=duration_to_sv: self.text_update(duration_to_sv, "date_to"))
-        self.durationto = Entry(self.booking_body_frame,font=("Comic Sans", 15) , textvariable=duration_to_sv)
+        self.durationto = Entry(self.booking_body_frame,font=("Comic Sans", 15) , textvariable=duration_to_sv, background=line_color, relief=FLAT)
         self.durationto.place(x= 2*xspacing + 40, y=spacing + 200, width=150)
 
         accomodation_label = Label(self.booking_body_frame, text="Accomodation", font=("Comic Sans", 16, "bold"), fg='#fff', bg=window_secondary)
