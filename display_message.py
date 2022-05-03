@@ -1,4 +1,4 @@
-from tkinter import Button, Frame, PhotoImage, Label
+from tkinter import Button, Frame, Label
 from constants import window_active, window_primary, window_secondary
 
 popup_color = "#FEFFF0"

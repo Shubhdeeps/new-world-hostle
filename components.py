@@ -3,8 +3,6 @@ from constants import *
 from content_body import select_page
 
 
-
-
 # ---------------------HEADER COMPONENT-------------------
 logo = PhotoImage(file='./assets/logo.png')
 def header():
@@ -35,6 +33,7 @@ def header():
 
 
 # -------------------------MENUBAR COMPONENT---------------------------
+from dataprocessing import write_csv, write_text, read_csv, about_application, developer_information
 def menubar():
     #Creating Menubar, and adding File menu, and Help menu
     menubar = Menu(window)
@@ -43,13 +42,13 @@ def menubar():
     # for File menu
     filemenu = Menu(menubar, tearoff=0, activebackground = window_active)
     menubar.add_cascade(label='File', menu=filemenu)
-    filemenu.add_command(label="Import")
+    filemenu.add_command(label="Import", command= read_csv)
 
     #Export Menu catagorized into CSV and TEXT file
     exportmenu = Menu(menubar, tearoff=0, activebackground = window_active)
     filemenu.add_cascade(label="Export as" , menu=exportmenu)
-    exportmenu.add_command(label="CSV file")
-    exportmenu.add_command(label="Text file")
+    exportmenu.add_command(label="CSV file", command= write_csv)
+    exportmenu.add_command(label="Text file", command= write_text)
 
     filemenu.add_separator()
     filemenu.add_command(label="Quit application", command= window.destroy)
@@ -59,8 +58,8 @@ def menubar():
     #for Help menu
     helpmenu = Menu(menubar, tearoff=0, activebackground = window_active)
     menubar.add_cascade(label='Help', menu=helpmenu)
-    helpmenu.add_command(label="About application")
-    helpmenu.add_command(label="Developer info")
+    helpmenu.add_command(label="About application", command= about_application)
+    helpmenu.add_command(label="Developer info", command= developer_information)
 
 #-------------NAVIGATION BAR COMPONENT------------------------
 #the group of button added directly to windows

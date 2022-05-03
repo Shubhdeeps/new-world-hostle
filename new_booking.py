@@ -1,14 +1,13 @@
-from pkgutil import iter_modules
 from tkinter import FLAT, Frame, Label, Entry, Radiobutton, ttk, StringVar
-from constants import window_secondary, window, list_items
+from constants import window_secondary, window, list_items, accomodation_types
 from frame_header import header_content
 from residents import *
 from display_message import *
 from history import render_enteries
+from database import run_database
 
 country_list = ("Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cruise Ship","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kuwait","Kyrgyz Republic","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Mauritania","Mauritius","Mexico","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Namibia","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre &amp; Miquelon","Samoa","San Marino","Satellite","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Kitts &amp; Nevis","St Lucia","St Vincent","St. Lucia","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad &amp; Tobago","Tunisia","Turkey","Turkmenistan","Turks &amp; Caicos","Uganda","Ukraine","United Arab Emirates","United Kingdom","Uruguay","Uzbekistan","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe")
-accomodation_types = ("male dorm", "female dorm", "single room", "double room")
-line_color = '#7C7C7C'
+line_color = '#fff'
 data_fetched = {
     "name": "",
     "country": "",
@@ -18,6 +17,7 @@ data_fetched = {
     "date_to": "",
     "room_type":""
 }
+
 class Booking:
     def __init__(self, booking_frame,  header_text, item, btn_name):
         self.btn_name = btn_name
@@ -80,15 +80,23 @@ class Booking:
         duration_to_sv.trace("w", lambda name, index, mode, sv=duration_to_sv: self.text_update(duration_to_sv, "date_to"))
         self.durationto = Entry(self.booking_body_frame,font=("Comic Sans", 15) , textvariable=duration_to_sv, background=line_color, relief=FLAT)
         self.durationto.place(x= 2*xspacing + 40, y=spacing + 200, width=150)
+        self.accomodationlist = ""
+        self.accomodation_combobox()
+
+    def accomodation_combobox(self):
+        if(self.accomodationlist != ""):
+            self.accomodationlist.destroy()
 
         accomodation_label = Label(self.booking_body_frame, text="Accomodation", font=("Comic Sans", 16, "bold"), fg='#fff', bg=window_secondary)
-        accomodation_label.place(x=0, y=spacing + 250)
+        accomodation_label.place(x=0, y=305)
         accomodation_sv = StringVar()
-        accomodation_sv.trace("w", lambda name, index, mode, sv=accomodation_sv: self.text_update(accomodation_sv, "room_type"))
-        self.accomodationlist = ttk.Combobox(self.booking_body_frame, state="readonly", values = accomodation_types ,font=("Comic Sans", 12), textvariable=accomodation_sv)
+        accomodation_sv.trace("w", lambda name, index, mode, sv=accomodation_sv: self.accomodation_update(accomodation_sv))
+        from accomodation import Accomodation
+        self.accomodationlist = ttk.Combobox(self.booking_body_frame, state="readonly", 
+        values =  [str(Accomodation().available_list()[0]) + " male dorm", str(Accomodation().available_list()[1]) + " female dorm", str(Accomodation().available_list()[2]) + " single room", str(Accomodation().available_list()[3]) + " double room"],
+        font=("Comic Sans", 12), textvariable=accomodation_sv)
         self.accomodationlist.set("Select accomodation type")
-        self.accomodationlist.place(x= xspacing, y=spacing + 250)
-
+        self.accomodationlist.place(x= 200, y=55 + 250)
 
     def update_item(self, item):
         self.name.insert(0, item["name"])
@@ -103,6 +111,14 @@ class Booking:
     def text_update(self, sv, text):
         global data_fetched
         data_fetched[text] = sv.get()
+
+    def accomodation_update(self, sv):
+        global data_fetched
+        for x in accomodation_types:
+            if(sv.get().endswith(x) == True):
+                data_fetched["room_type"] = x
+                return
+        
         
     #button funtioin to clear all entry fields
     def clear_fields(self):
@@ -131,10 +147,13 @@ class Booking:
                 frame_init()
                 messagebox1 = Popup(window, "Updated", "Entry was successfully updated")
                 messagebox1.flex_box()
+                run_database()
                 return 
 
             messagebox1 = Popup(window, "Added", "Entry was successfully added, with booking id: " + str(new_id))
             messagebox1.flex_box()
+            self.accomodation_combobox()
+            run_database()
             return
         
         messagebox1 = Popup(window, "Error", response)

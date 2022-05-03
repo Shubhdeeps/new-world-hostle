@@ -1,9 +1,9 @@
-from pprint import isreadable
 from tkinter import FLAT, Frame, Label, Entry, PhotoImage, Button, StringVar, ttk
 from constants import window_secondary, window_active, window_primary, window, list_items
 from display_message import Popup
 from frame_header import header_content
 from content_body import history_frame
+
 #a list to contain recent history files
 history_list = []
 
@@ -103,7 +103,7 @@ class Items:
         self._outer_frame.destroy()
 
     def _double_action(self, event):
-        messagebox1 = Popup(window, self.person["name"] + ", " +  self.person["gender"] + " from " + self.person["country"], "Passport number: " +  self.person["passport"] + ", Duration of stay:" + self.person["date_from"] + " to " + self.person["date_to"] + ", Accomodation type: " + self.person["room_type"])
+        messagebox1 = Popup(window, self.person["name"] + ", " +  self.person["gender"] + " from " + self.person["country"], "Passport number: " +  self.person["passport"] + ", Duration of stay:" + self.person["date_from"] + " to " + self.person["date_to"] + ", Accomodation type: " + self.person["room_type"] + ', Room No: ' + self.person["room_number"])
         messagebox1.flex_box()
 
 
@@ -153,9 +153,11 @@ def delete_entry():
         messagebox1.flex_box()
         return
 
+    from database import delete_database_entry
     for x in history_list:
         if(x.get_selected_bookings()[1] == True):
             deleted = _remove_from_list(x.get_selected_bookings()[0])
+            delete_database_entry(x.get_selected_bookings()[0])
             deleted_enteries.append(str(deleted))
         x.destroy_frame()
             
@@ -173,6 +175,10 @@ def _remove_from_list(booking_id):
     global list_items
     global history_list
     delete = _entry_to_be_del(booking_id)
+    empty_room = delete["room_number"]
+    empty_room_type = delete["room_type"]
+    from accomodation import Accomodation
+    Accomodation().checkout(empty_room, empty_room_type)
     list_items.remove(delete)
     return booking_id
 
@@ -202,6 +208,10 @@ def update_entry():
         for x in history_list:
             if(x.get_selected_bookings()[1] == True):
                 item_to_be_update = _entry_to_be_del(x.get_selected_bookings()[0])
+                empty_room = item_to_be_update["room_number"]
+                empty_room_type = item_to_be_update["room_type"]
+                from accomodation import Accomodation
+                Accomodation().checkout(empty_room, empty_room_type)
                 list_items.remove(item_to_be_update)
         update_frame(item_to_be_update)
 
@@ -280,6 +290,7 @@ def init_buttons():
 
     search_options = ttk.Combobox(history_body_frame, state="readonly", values = options_list,font=("Comic Sans", 8), textvariable=option_sv)
     search_options.place(x=0, y=350, width=80)
+    search_options.set('name')
 
     up_scroll = Button(history_body_frame, text=" ", bg=window_secondary, activebackground=window_secondary, image=uplogo, bd=0, relief=FLAT, command=scroll_btn_up)
     up_scroll.place(relx=1, x=-40, rely=0.3, y=-20)

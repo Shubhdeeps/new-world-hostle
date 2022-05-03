@@ -1,0 +1,20 @@
+Name,Booking Id,Country,Passport Number,Gender,Check In,Check Out,Room Type,Room Number
+Kristen Richard,473734,Eritrea,J6GE7PEY4,F,10-04-2022,22-12-2022,single room,100
+Robert Anderson,82749,Ethiopia,CUGXS961P,F,10-04-2022,22-12-2022,single room,101
+Jennifer Graham,491420,Macedonia,VIPEPSN8C,M,10-04-2022,22-12-2022,male dorm,300A
+Cody Heath,125797,Maldives,ZUYYQF5FP,F,10-04-2022,22-12-2022,single room,102
+Ronald Morrison,922129,Albania,OSMMSRR6N,M,10-04-2022,22-12-2022,double room,113
+Jeffery Williams,877945,Saint Barthelemy,HVMO9E408,M,10-04-2022,22-12-2022,male dorm,300B
+Katherine Watson,971352,Cameroon,ELDHQ6KRN,M,10-04-2022,22-12-2022,double room,114
+Tiffany Smith,769876,Gabon,OAEOA4E8I,M,10-04-2022,22-12-2022,double room,115
+Nicole Nelson,388972,Reunion,TK3VGLWK8,M,10-04-2022,22-12-2022,double room,116
+Anthony James,900897,Belgium,VEFKL8GER,M,10-04-2022,22-12-2022,male dorm,300C
+William Jones,526805,Saint Pierre and Miquelon,BS3SI8JJX,M,10-04-2022,22-12-2022,double room,117
+Lori Nelson,260587,Croatia,PO9MA5XZH,M,10-04-2022,22-12-2022,double room,118
+Ann Middleton,79557,Tanzania,RCNGA2IG9,M,10-04-2022,22-12-2022,male dorm,300D
+Robert Murray,823005,Micronesia,ZMQ6LH3GP,M,10-04-2022,22-12-2022,double room,119
+Veronica Castro,98177,Tuvalu,YWWVGJZ99,M,10-04-2022,22-12-2022,double room,120
+Raymond Patrick,637834,Czech Republic,N1TP82II4,F,10-04-2022,22-12-2022,single room,105
+Mariah Nguyen,680733,Portugal,S2BUACM5X,M,10-04-2022,22-12-2022,male dorm,301A
+Chelsea Obrien,580642,Anguilla,KTUFC9L7U,F,10-04-2022,22-12-2022,single room,106
+Micheal Lowe,636676,Cambodia,HU2LMSARI,M,10-04-2022,22-12-2022,male dorm,301B
